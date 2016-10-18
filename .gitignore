@@ -87,3 +87,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Specific werewolf app files
+werewolf/db.sqlite3
