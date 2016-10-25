@@ -90,3 +90,6 @@ ENV/
 
 # Specific werewolf app files
 werewolf/db.sqlite3
+
+# Silly PyCharm files
+.idea/
