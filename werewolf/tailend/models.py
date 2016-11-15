@@ -37,8 +37,10 @@ class HistoryField(models.Field):
     def get_prep_value(self, value):
         return value.to_text()
 
-    def get_db_prep_value(self, value, expression, connection, context):
-        self.get_prep_value(value)
+    def get_db_prep_value(self, value, connection, prepared=False):
+        if prepared:
+            return value
+        return self.get_prep_value(value)
 
     def get_internal_type(self):
         return 'TextField'
