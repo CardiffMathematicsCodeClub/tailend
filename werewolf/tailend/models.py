@@ -15,6 +15,7 @@ class History(object):
             self.history = literal_eval(txt)
         else:
             self.history = []
+        return self
 
     def to_text(self):
         return str(self.history)
@@ -27,7 +28,7 @@ class HistoryField(models.Field):
     description = "A game history for Werewolf"
 
     def from_db_value(self, value, expression, connection, context):
-        self.to_python(value)
+        return self.to_python(value)
 
     def to_python(self, value):
         if isinstance(value, History):
