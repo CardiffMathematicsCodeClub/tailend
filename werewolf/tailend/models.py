@@ -51,41 +51,12 @@ class HistoryField(models.Field):
         return self.get_prep_value(value)
 
 
-class Game(models.Model):
-    """
-    Manage game state
-    """
-    owner = models.ForeignKey("Player", related_name="games")
-    STATUS_CHOICES = (
-        ("JN", "Joining"),
-        ("ST", "Started"),
-        ("FN", "Finished")
-    )
-    status = models.CharField(
-        max_length=2,
-        choices=STATUS_CHOICES,
-        default="JN"
-    )
-    daynumber = models.IntegerField(
-        default=0
-    )
-    STAGE_CHOICES = (
-        ("N", "Night"),
-        ("D", "Day")
-    )
-    stage = models.CharField(
-        max_length=2,
-        choices=STAGE_CHOICES,
-        default="N"
-    )
-    history = HistoryField()
-
-
 class Player(models.Model):
     """
     Manage player state
     """
     name = models.CharField(max_length=100)
+    id = models.CharField(max_length=20, primary_key=True)
     STATUS_CHOICES = (
         ("VG", "Voting"),
         ("VD", "Voted"),
@@ -110,3 +81,34 @@ class Player(models.Model):
         choices=ROLE_CHOICES,
         default=None
     )
+
+
+class Game(models.Model):
+    """
+    Manage game state
+    """
+    owner = models.ForeignKey(Player, related_name="games")
+    player_list = models.ManyToManyField(Player)
+    STATUS_CHOICES = (
+        ("JN", "Joining"),
+        ("ST", "Started"),
+        ("FN", "Finished")
+    )
+    status = models.CharField(
+        max_length=2,
+        choices=STATUS_CHOICES,
+        default="JN"
+    )
+    daynumber = models.IntegerField(
+        default=0
+    )
+    STAGE_CHOICES = (
+        ("N", "Night"),
+        ("D", "Day")
+    )
+    stage = models.CharField(
+        max_length=2,
+        choices=STAGE_CHOICES,
+        default="N"
+    )
+    history = HistoryField()
