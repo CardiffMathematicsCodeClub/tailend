@@ -52,20 +52,32 @@ class HistoryField(models.Field):
 
 
 class Player(models.Model):
-    """
-    Manage player state
+    """Player Class.
+
+    Parameters
+    ----------
+
+    -name: Char Field
+         player's name
+    -id: Char Field
+         player's id
+    -stage: Char Field
+         the stage the player is currently. There are four stages of each
+         round of the game
+    -role: Char Field
+         player's role
     """
     name = models.CharField(max_length=100)
     id = models.CharField(max_length=20, primary_key=True)
-    STATUS_CHOICES = (
+    STAGE_CHOICES = (
         ("VG", "Voting"),
         ("VD", "Voted"),
         ("DD", "Dead"),
         ("SG", "Sleeping")
     )
-    status = models.CharField(
+    stage = models.CharField(
         max_length=2,
-        choices=STATUS_CHOICES,
+        choices=STAGE_CHOICES,
         default="SG"
     )
     ROLE_CHOICES = (
@@ -84,8 +96,23 @@ class Player(models.Model):
 
 
 class Game(models.Model):
-    """
-    Manage game state
+    """Game class.
+
+    Parameters
+    ----------
+
+    -owner: Foreign Key
+            a player instance that is the game master
+    -player_list: ManyToManyField
+            a list of player instances
+    -status: Char Field
+            the status of the game. There can only be three different game status
+    -daynumber: Integer Field
+            an integer showing in which day the game is currently
+    -stage: Char Field
+            the stage can either be day or night
+    -history: History instance
+            the history of the entire game
     """
     owner = models.ForeignKey(Player, related_name="games")
     player_list = models.ManyToManyField(Player)
