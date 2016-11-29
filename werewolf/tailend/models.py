@@ -51,11 +51,71 @@ class HistoryField(models.Field):
         return self.get_prep_value(value)
 
 
+class Player(models.Model):
+    """Player Class.
+
+    Parameters
+    ----------
+
+    -name: Char Field
+         player's name
+    -id: Char Field
+         player's id
+    -stage: Char Field
+         the stage the player is currently. There are four stages of each
+         round of the game
+    -role: Char Field
+         player's role
+    """
+    name = models.CharField(max_length=100)
+    id = models.CharField(max_length=20, primary_key=True)
+    STAGE_CHOICES = (
+        ("VG", "Voting"),
+        ("VD", "Voted"),
+        ("DD", "Dead"),
+        ("SG", "Sleeping")
+    )
+    stage = models.CharField(
+        max_length=2,
+        choices=STAGE_CHOICES,
+        default="SG"
+    )
+    ROLE_CHOICES = (
+        ("VG", "Villager"),
+        ("WW", "Werewolf"),
+        ("WD", "Witch Doctor"),
+        ("GH", "Ghost"),
+        ("CT", "Cthulu"),
+        ("SR", "Seer")
+    )
+    role = models.CharField(
+        max_length=2,
+        choices=ROLE_CHOICES,
+        default=None
+    )
+
+
 class Game(models.Model):
+    """Game class.
+
+    Parameters
+    ----------
+
+    -owner: Foreign Key
+            a player instance that is the game master
+    -player_list: ManyToManyField
+            a list of player instances
+    -status: Char Field
+            the status of the game. There can only be three different game status
+    -daynumber: Integer Field
+            an integer showing in which day the game is currently
+    -stage: Char Field
+            the stage can either be day or night
+    -history: History instance
+            the history of the entire game
     """
-    Manage game state
-    """
-    owner = models.ForeignKey("Player", related_name="games")
+    owner = models.ForeignKey(Player, related_name="games")
+    player_list = models.ManyToManyField(Player)
     STATUS_CHOICES = (
         ("JN", "Joining"),
         ("ST", "Started"),
@@ -79,34 +139,3 @@ class Game(models.Model):
         default="N"
     )
     history = HistoryField()
-
-
-class Player(models.Model):
-    """
-    Manage player state
-    """
-    name = models.CharField(max_length=100)
-    STATUS_CHOICES = (
-        ("VG", "Voting"),
-        ("VD", "Voted"),
-        ("DD", "Dead"),
-        ("SG", "Sleeping")
-    )
-    status = models.CharField(
-        max_length=2,
-        choices=STATUS_CHOICES,
-        default="SG"
-    )
-    ROLE_CHOICES = (
-        ("VG", "Villager"),
-        ("WW", "Werewolf"),
-        ("WD", "Witch Doctor"),
-        ("GH", "Ghost"),
-        ("CT", "Cthulu"),
-        ("SR", "Seer")
-    )
-    role = models.CharField(
-        max_length=2,
-        choices=ROLE_CHOICES,
-        default=None
-    )
